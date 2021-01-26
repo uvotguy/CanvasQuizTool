@@ -18,6 +18,7 @@ CANVAS_USER_ID - your Canvas login (e.g. AustinPowers@mi6.gov)
 CANVAS_USER_TOKEN - the token you just created
 CANVAS_URL - URL of your Canvas instance (e.g. https://mi6.instructure.com)
 KALTURA_URL = URL of your Canvas KAF instance (e.g. https://mi6canvas-prod.kaf.kaltura.com)
+CANVAS_USERS_TO_IGNORE - Comma separated list of **teachers** to ignore (e.g. AustinPowers@mi6.gov,MrBigglesworth@mi6.gov,NumberTwo@mi6.gov)
 
 If any of these is not set, the code program will give an error message and exit.  If your login
 and / or token are incorrect, the program will print a message and exit.
