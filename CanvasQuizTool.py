@@ -57,6 +57,7 @@ handle.write('Teacher(s)\n')
 for teacher in teachers:
     handle.write('\t{0}\t{1}\n'.format(teacher.short_name, teacher.sis_user_id))
 handle.write('Assignment\t{0}\n'.format(thisQuiz[0]))
+handle.write('Quiz Entry ID:\t{0}\n'.format(thisQuiz[2]))
 handle.write('Due Date\t{0}\n'.format(thisAssignment.due_at))
 handle.write('Grade Type\t{0}\n'.format(thisAssignment.grading_type))
 handle.write('Allowed Attempts\t{0}\n'.format(thisAssignment.allowed_attempts))

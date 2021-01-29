@@ -39,3 +39,21 @@ on Windows:
 Select a course from the menu.
 
 Select a video quiz from the menu.
+
+# Fetch Kaltura Quiz Grade Tool
+
+This tool will dump a list of quiz submissions for a given quiz.
+
+## Setup
+
+Set the following environment variables:
+
+KALTURA_PID - Kaltura Partner ID
+KALTURA_SECRET - Administrative secret
+KALTURA_USER - Kaltura User Id must have administrative privilege to dump scores
+
+## Run the program
+
+*py FetchKalturaQuizGrade {Quiz ID}*
+
+Output is printed to the console and written to a file.
