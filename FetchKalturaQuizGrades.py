@@ -71,22 +71,33 @@ filename = Path.joinpath(home, datestr + '_FetchKalturaQuizGrades-' + quizId + '
 handle = open(filename, "wt")
 
 pager = KalturaFilterPager()
+pager .pageIndex = 1
+pager.pageSize = 500
 
 quizFilter = KalturaQuizUserEntryFilter()
 quizFilter.userIdEqualCurrent = KalturaNullableBoolean.FALSE_VALUE
 quizFilter.entryIdEqual = quizId
 quizFilter.statusEqual = KalturaUserEntryStatus.QUIZ_SUBMITTED
-quizSubmissions = client.userEntry.list(quizFilter, pager)
 msg = 'Entry ID\tName\tUser Id\tCalculated Score\tSubmitted At'
 print(msg)
 handle.write(msg + '\n')
-for subm in quizSubmissions.objects:
-    intDate = subm.updatedAt
-    dt = datetime.fromtimestamp(intDate)
-    kalturaUser = client.user.get(subm.userId)
-    msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, kalturaUser.fullName, kalturaUser.id, subm.calculatedScore, dt)
-    handle.write(msg + '\n')
-    print(msg)
+
+done = False
+while done == False:
+    quizSubmissions = client.userEntry.list(quizFilter, pager)
+    if len(quizSubmissions.objects) ==0:
+        done = True
+        continue
+    else:
+        pager.pageIndex += 1
+
+    for subm in quizSubmissions.objects:
+        intDate = subm.updatedAt
+        dt = datetime.fromtimestamp(intDate)
+        kalturaUser = client.user.get(subm.userId)
+        msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, kalturaUser.fullName, kalturaUser.id, subm.calculatedScore, dt)
+        handle.write(msg + '\n')
+        print(msg)
 
 handle.close()
 print("\n\nOutput written to {0}".format(filename))

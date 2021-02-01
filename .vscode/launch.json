@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args" : ["1_fwd3e64y"]
+            "args" : ["1_p2g7srgp"]
         }
     ]
 }
