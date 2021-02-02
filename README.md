@@ -52,8 +52,17 @@ KALTURA_PID - Kaltura Partner ID
 KALTURA_SECRET - Administrative secret
 KALTURA_USER - Kaltura User Id must have administrative privilege to dump scores
 
+Install the Kaltura API Client for python:
+
+*pip install KalturaApiClient*
+
 ## Run the program
 
 *py FetchKalturaQuizGrade {Quiz ID}*
 
 Output is printed to the console and written to a file.
+
+## Debugging
+
+Edit the **args** parameter in *launch.json*.  The first (and only)
+argument it the target Entry ID.  Run the code in debug mode.

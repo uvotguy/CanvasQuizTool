@@ -78,7 +78,6 @@ for subm in submissions:
     print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}'.format(subm.assignment_id, name, uid, subm.grade, thisAssignment.points_possible, subm.attempt, subm.submitted_at))
     handle.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n'.format(subm.assignment_id, name, uid, subm.grade, thisAssignment.points_possible, subm.attempt, subm.submitted_at))
 
-
 handle.close()
 print("\n\nOutput written to {0}".format(filename))
 print("done")
