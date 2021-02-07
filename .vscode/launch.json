@@ -8,7 +8,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "args" : ["1_p2g7srgp"]
+            "args" : [""]
         }
     ]
 }

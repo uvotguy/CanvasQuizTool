@@ -50,3 +50,4 @@ coverage.xml
 docs/_build/
 __pycache__/selectMyVideoQuizAssignment.cpython-38.pyc
 __pycache__/selectMyVideoQuizAssignment.cpython-38.pyc
+*.pyc
