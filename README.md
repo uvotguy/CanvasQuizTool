@@ -27,7 +27,7 @@ you can always create another.
 ### Environment Variables
 The quiz tool reads sensitive variables from your environment.  Set the following environment variables:
 |        Variable        	|                                                     Description                                                     	|
-|:----------------------:	|:-------------------------------------------------------------------------------------------------------------------:	|
+|:----------------------	|:-------------------------------------------------------------------------------------------------------------------	|
 | CANVAS_USER_ID         	| your Canvas login (e.g. AustinPowers@mi6.gov)                                                                       	|
 | CANVAS_USER_TOKEN      	| the token you just created                                                                                          	|
 | CANVAS_URL             	| URL of your Canvas instance (e.g. https://mi6.instructure.com)                                                      	|
