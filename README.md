@@ -36,6 +36,7 @@ The quiz tool reads sensitive variables from your environment.  Set the followin
 | KALTURA_PID            	| Kaltura Partner ID                                                                                                  	|
 | KALTURA_SECRET         	| Administrative secret                                                                                               	|
 | KALTURA_USER           	| Kaltura User Id must have administrative privilege to dump scores                                                   	|
+
 If any of these is not set, the code program will give an error message and exit.  If your login
 and/or token are incorrect, the program will print a message and exit.
 
