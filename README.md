@@ -1,17 +1,16 @@
 # Canvas Quiz Tool
 This tool can be used to dump student assignment grades for a course.  The tool consists
-of three parts:  a part to gather information from Canvas, one part to gather quiz submissions
+of three parts:  a part to gather information from Canvas, a part to gather quiz submissions
 from Kaltura, and a third part to compare the results.
 
-Teachers create video quizzes in Kaltura.  They record a video, and the Kaltura interface
-allows them to turn it into a video quiz.  When a student takes a video quiz, Kaltura gathers
-his/her responses, computes a grade, and sends the results to Canvas via the Kaltura KAF
-software.  If everything works properly, quiz results appear automatically in the course
+Video quizzes are delivered by Kaltura.  When a student takes a video quiz, Kaltura gathers
+student responses, computes a grade, and sends the results to Canvas via the Kaltura KAF
+module.  If everything works properly, quiz results appear automatically in the course
 gradebook.
 
 Only teachers have permission to view course grades.  Canvas administrators
-at your institution can grant you access.
-
+at your institution can grant you access.  When presented with a list of courses to
+select, you will only see courses you teach (or at least have *Teacher* privilege).
 
 ## Setup
 ### Canvas Access Token
@@ -27,16 +26,16 @@ you can always create another.
 
 ### Environment Variables
 The quiz tool reads sensitive variables from your environment.  Set the following environment variables:
-| Variable | Description |
-| CANVAS_USER_ID | your Canvas login (e.g. AustinPowers@mi6.gov) |
-| CANVAS_USER_TOKEN | the token you just created |
-| CANVAS_URL | URL of your Canvas instance (e.g. https://mi6.instructure.com) |
-| KALTURA_URL | URL of your Canvas KAF instance (e.g. https://mi6canvas-prod.kaf.kaltura.com) |
-| CANVAS_USERS_TO_IGNORE | Comma separated list of **teachers** to ignore (e.g. AustinPowers@mi6.gov,MrBigglesworth@mi6.gov,NumberTwo@mi6.gov) |
-| KALTURA_PID | Kaltura Partner ID |
-| KALTURA_SECRET | Administrative secret |
-| KALTURA_USER | Kaltura User Id must have administrative privilege to dump scores |
-
+|        Variable        	|                                                     Description                                                     	|
+|:----------------------:	|:-------------------------------------------------------------------------------------------------------------------:	|
+| CANVAS_USER_ID         	| your Canvas login (e.g. AustinPowers@mi6.gov)                                                                       	|
+| CANVAS_USER_TOKEN      	| the token you just created                                                                                          	|
+| CANVAS_URL             	| URL of your Canvas instance (e.g. https://mi6.instructure.com)                                                      	|
+| KALTURA_URL            	| URL of your Canvas KAF instance (e.g. https://mi6canvas-prod.kaf.kaltura.com)                                       	|
+| CANVAS_USERS_TO_IGNORE 	| Comma separated list of **teachers** to ignore (e.g. AustinPowers@mi6.gov,MrBigglesworth@mi6.gov,NumberTwo@mi6.gov) 	|
+| KALTURA_PID            	| Kaltura Partner ID                                                                                                  	|
+| KALTURA_SECRET         	| Administrative secret                                                                                               	|
+| KALTURA_USER           	| Kaltura User Id must have administrative privilege to dump scores                                                   	|
 If any of these is not set, the code program will give an error message and exit.  If your login
 and/or token are incorrect, the program will print a message and exit.
 
