@@ -49,29 +49,27 @@ for st in students:
             #print("{0}\t{1}\t{2}".format(studentFullName, subm[2], subm[4])
             # Find corresponding Canvas grade(s)
             canvasGrade = ''
+            diff = ''
             for canvasSubm in canvasQuizData[5]:
                 if canvasSubm.user_id == canvasUid:
-                    canvasGrade = canvasSubm.entered_score
-            if canvasGrade != kalturaPoints:
-                diff = '*'
-            else:
-                diff = ''
-            if canvasGrade == None:
-                msg = '{0}\t{1}\t{2}\t{3:.0%}\t{4:.2f}\t{5}'.format(
-                                                    canvasFullName,
-                                                    canvasGrade,
-                                                    kalturaFullName,
-                                                    kalturaPercent,
-                                                    kalturaPoints,
-                                                    diff)
-            else:
-                msg = '{0}\t{1:.2f}\t{2}\t{3:.0%}\t{4:.2f}\t{5}'.format(
-                                                    canvasFullName,
-                                                    canvasGrade,
-                                                    kalturaFullName,
-                                                    kalturaPercent,
-                                                    kalturaPoints,
-                                                    diff)
+                    if (canvasSubm.entered_score == None):
+                        canvasGrade = ''
+                        diff = '*'
+                    elif (type(canvasSubm.entered_score) is float):
+                        if (canvasSubm.entered_score != kalturaPoints):
+                            diff = '*'
+                        canvasGrade = '{0:.2f}'.format(canvasSubm.entered_score)
+                    else:
+                        canvasGrade = canvasSubm.entered_score
+                        diff = '*'
+
+            msg = '{0}\t{1}\t{2}\t{3:.0%}\t{4:.2f}\t{5}'.format(
+                                                canvasFullName,
+                                                canvasGrade,
+                                                kalturaFullName,
+                                                kalturaPercent,
+                                                kalturaPoints,
+                                                diff)
             print(msg)
             handle.write(msg + '\n')
 
