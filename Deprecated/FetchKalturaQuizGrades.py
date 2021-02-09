@@ -24,23 +24,6 @@ def FetchKalturaQuizGrades(quizId):
     outData = []
     print("Entry:  {0}".format(quizId))
 
-    try:
-        kalturaPid = os.environ['KALTURA_PID']
-    except:
-        print('/n/nOops!  You forgot to set the KALTURA_PID environment variable./n/n')
-        exit(3)
-
-    try:
-        kalturaSecret = os.environ['KALTURA_SECRET']
-    except:
-        print('/n/nOops!  You forgot to set the KALTURA_SECRET environment variable./n/n')
-        exit(4)
-
-    try:
-        kalturaUser = os.environ['KALTURA_USER']
-    except:
-        print('/n/nOops!  You forgot to set the KALTURA_USER environment variable./n/n')
-        exit(5)
 
     config = KalturaConfiguration(kalturaPid)
     config.serviceUrl = "https://www.kaltura.com/"

@@ -1,7 +1,10 @@
-# Canvas Quiz Tool
+# ReportCourseQuizResults
 This tool can be used to dump student assignment grades for a course.  The tool consists
 of three parts:  a part to gather information from Canvas, a part to gather quiz submissions
-from Kaltura, and a third part to compare the results.
+from Kaltura, and a third part to compare the results. As it loops over course assignments,
+it writes raw video quiz submission data from Kaltura and gradebook data from Canvas.  Output
+files are saved to a standard output folder:  ~/CanvasQuizResults/{Canvas Course ID}/.  Raw
+output files for a given quiz are identified by its Kaltura Entry Id.  
 
 Video quizzes are delivered by Kaltura.  When a student takes a video quiz, Kaltura gathers
 student responses, computes a grade, and sends the results to Canvas via the Kaltura KAF
@@ -50,19 +53,23 @@ Also install the Kaltura API Client for python:
 *pip install KalturaApiClient*
 
 ## Run the Program
-The top level python program *ReportQuizResults.py* calls python scripts to do parts 1 and 2 as described
-above.  It then compares Kalura quiz submission data with the grades in the course gradebook.
+The top level python program *ReportCourseQuizResults.py* prompts the user to select a course from
+a list of Canvas courses he/she teaches.  It queries Canvas for a list of assignments, and filters
+out those assignments not associated with a Kaltura video quiz.
 
-*python3 ReportQuizResults.py*
+It loops over video quiz assignments, gathers Canvas quiz grades, gathers Kaltura submissions, and
+compares Kalura quiz submission data with the grades in the course gradebook.
+
+*python3 ReportCourseQuizResults.py*
 
 On windows:
 
-*py ReportQuizResults.py*
+*py ReportCourseQuizResults.py*
 
-The call to *CanvasQuizTool.py* prompts you to select a course.  Only courses for which you are a *Teacher*
-are shown.  Select a course.  It then displays a list of course assignments that are associated with a
-Kaltura video quiz.  Select a quiz.
+## Output
 
+All output is written to the folder *~/
+As the program loops over
 A table of grades is printed to the screen AND written to an output file.
 
 *ReportQuizGrades.py* then calls the script to gather Kaltura video quiz submissions for the selected

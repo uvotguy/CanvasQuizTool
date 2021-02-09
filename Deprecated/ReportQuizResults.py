@@ -62,7 +62,6 @@ for st in students:
                     else:
                         canvasGrade = canvasSubm.entered_score
                         diff = '*'
-
             msg = '{0}\t{1}\t{2}\t{3:.0%}\t{4:.2f}\t{5}'.format(
                                                 canvasFullName,
                                                 canvasGrade,

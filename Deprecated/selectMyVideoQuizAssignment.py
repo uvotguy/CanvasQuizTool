@@ -1,5 +1,7 @@
 import re
 
+def getCourseVideoQuizAssignments(thisCourse, kalturaUrl):
+    
 def selectMyVideoQuizAssignment(thisCourse, assignments, kalturaUrl):
     thisQuiz = None
     videoQuizzes=[]

@@ -5,9 +5,14 @@ import re
 import selectMyCourse
 import selectMyVideoQuizAssignment
 import kochUtilities
+import getEnvironmentVariables
 
-def CanvasQuizTool():
-    logger = logging.getLogger()
+def PromptForCourse(client):
+    a = 3
+
+def CanvasQuizTool(client):
+    global targetUserId, canvasToken, canvasUrl, kalturaUrl, ignoreUids
+
     # Python arrays are not fixed type.  Each element can be a completely different
     # data type:  string, int, or even object.  We use that language property here.
     # The output arry contains the following information:
@@ -36,26 +41,7 @@ def CanvasQuizTool():
     #               - _elements[x].score            (entered_score minus points_deducted?)
     #               - _elements[x].user_id
     #
-    outData = []
-    try:
-        targetUserId = os.environ['CANVAS_USER_ID']
-        canvasToken = os.environ['CANVAS_USER_TOKEN']
-        canvasUrl = os.environ['CANVAS_URL']
-        kalturaUrl = os.environ['KALTURA_URL']
-        try:
-            value = os.environ['CANVAS_USERS_TO_IGNORE']
-            ignoreUids = value.split(',')
-        except:
-            ignoreUids = []     # Empty list
-    except Exception as ex:
-        logger.error("Error getting environment variables.")
-        logger.exception(ex)
-        exit(1)
-
-    try:
-        client = canvasapi.Canvas(canvasUrl, canvasToken)
-    except:
-        logger.exception("Error getting Canvas API client.")
+   outData = []
 
     user = client.get_user(targetUserId, 'sis_login_id')
 
@@ -70,8 +56,6 @@ def CanvasQuizTool():
         teachers.append(teacher)
     outData.append(teachers)
 
-    # Make a list of all assignments
-    assignments = thisCourse.get_assignments()
 
     # Filter the list of assignments to select ones that are Kaltura video quizzes.
     # Prompt user to select one
@@ -121,7 +105,7 @@ def CanvasQuizTool():
 
     print("\n\nOutput written to {0}".format(filename))
     print("done")
-    return outData
+    #return outData
 
 if __name__ == "__main__":
-    CanvasQuizTool()
+    CanvasQuizTool(client)
