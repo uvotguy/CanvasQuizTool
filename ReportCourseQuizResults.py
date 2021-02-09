@@ -42,8 +42,9 @@ def writeGradeResults(fileHandle,
                             canvasGrade = canvasSubm.entered_score
                             diff = '*'
                 # If there is no matching Canvas submission, the Canvas data will be blank.
-                msg = '{0}\t{1}\t{2}\t{3:.0%}\t{4:.2f}\t{5}\t{6}\t{7}\n'.format(
-                                assgn.name, 
+                msg = '{0}\t{1}\t{2}\t{3}\t{4:.0%}\t{5:.2f}\t{6}\t{7}\t{8}\n'.format(
+                                assgn.name,
+                                entryId, 
                                 str(assgn.due_at),
                                 canvasStudentFullName,
                                 kalturaPercent,
