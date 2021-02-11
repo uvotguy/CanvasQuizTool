@@ -1,23 +1,45 @@
 # ReportCourseQuizResults
+We occasionally see differences between grades in a course gradebook (for a Canvas course)
+and grades submitted to the gradebook via the Kaltura KAF module.  This is a known problem
+which has yet to be solved.  This tool can be used to compare Canvas gradebook grades to 
+the grade(s) submitted by Kaltura when a student takes, and possible re-takes a video quiz.
+
+The main output file is a table of grades as submitted by Kalura and the corresponding grade
+recorded by Canvas.  An asterisk in the last column indicates a difference between grades.
+Some courses have many students and many video quizzes.  To simplify comparison, the program
+loops over all results for a user-selected course.  For a class of 160 students given about
+20 video quizzes (some with multiple attempts enabled), the program takes about 20 minutes
+to generate a report.
+
+# Taking Quizzes
+A basic knowledge of how quizzing works might be helpful in understading the program -
+especially if you intend to modify it for your own purposes.
+
+Video quizzes are created in Kaltura.  Instructors use the *Assignments* inteface in Canvas to
+associate a Kaltura Video Quiz with a course assignment.  Video quizzes are delivered by
+Kaltura.  When a student takes a video quiz, Kaltura gathers student responses and stores them
+in a Kalura database.  Upon submission, Kaltura saves the score and computes an *effective*
+score, and sends the results to Canvas via the Kaltura KAF module.  If everything works 
+properly, quiz results appear automatically in the course gradebook.
+
+Note that a quiz score may be different than the computed *effective* score if muliple attempts
+are allows.  Based upon how the instuctor chooses (in Kaltura) to handle multiple attempts, the
+two scores may differ.  See the definition of **scoreType** in the Kaltura API documentation:
+https://developer.kaltura.com/api-docs/service/quiz/action/get.
+
+# Program Output
+The main output files is saved to a standard output folder:  ~/CanvasQuizResults/{Canvas Course ID}/.
+Raw output files for a given quiz are written to a sub-folder named by its Kaltura Entry Id.  Raw
+Kaltura output contains all quiz submissions, so multiple submissions and scores are shown.  Raw
+Canvas files contain useful header information such as course instructor(s), scoring method, and
+allowed number of attempts.
 
 
-This tool can be used to dump student assignment grades for a course.  The tool consists
-of three parts:  a part to gather information from Canvas, a part to gather quiz submissions
-from Kaltura, and a third part to compare the results. As it loops over course assignments,
-it writes raw video quiz submission data from Kaltura and gradebook data from Canvas.  Output
-files are saved to a standard output folder:  ~/CanvasQuizResults/{Canvas Course ID}/.  Raw
-output files for a given quiz are identified by its Kaltura Entry Id.  
-
-Video quizzes are delivered by Kaltura.  When a student takes a video quiz, Kaltura gathers
-student responses, computes a grade, and sends the results to Canvas via the Kaltura KAF
-module.  If everything works properly, quiz results appear automatically in the course
-gradebook.
-
+## Setup
 Only teachers have permission to view course grades.  Canvas administrators
 at your institution can grant you access.  When presented with a list of courses to
 select, you will only see courses you teach (or at least have *Teacher* privilege).
 
-## Setup
 ### Canvas Access Token
 Access to your Canvas course is granted via a Canvas API token.  Tokens are easily created in Canvas:
 
@@ -46,7 +68,7 @@ If any of these is not set, the code program will give an error message and exit
 and/or token are incorrect, the program will print a message and exit.
 
 ### Python Setup
-You will need to install the Python Canvas API module:
+Install the Python Canvas API module:
 
 *pip install canvasapi*
 
@@ -59,36 +81,14 @@ The top level python program *ReportCourseQuizResults.py* prompts the user to se
 a list of Canvas courses he/she teaches.  It queries Canvas for a list of assignments, and filters
 out those assignments not associated with a Kaltura video quiz.
 
-It loops over video quiz assignments, gathers Canvas quiz grades, gathers Kaltura submissions, and
-compares Kalura quiz submission data with the grades in the course gradebook.
+The program loops over video quiz assignments, gathers Canvas quiz grades, gathers Kaltura submissions, and
+compares the two datasets.
 
 *python3 ReportCourseQuizResults.py*
 
 On windows:
 
 *py ReportCourseQuizResults.py*
-
-## Output
-
-All output is written to the folder *~/
-As the program loops over
-A table of grades is printed to the screen AND written to an output file.
-
-*ReportQuizGrades.py* then calls the script to gather Kaltura video quiz submissions for the selected
-Canvas assignment.  The script prints out a table of quiz submissions AND writes the table to an output
-file.
-
-Finally, *ReportQuizResults.py* compares the two tables.  The results table is printed to the screen
-AND written to an output file.  An asterisk appears in the last column when the Canvas grade does
-not match the Kaltura grade.
-
-# Additional Information
-## Running Scripts Separately
-Both scripts *CanvasQuizTool.py* and *FetchKalturaQuizGrades.py* may be run separately.
-
-*python3 CanvasQuizTool.py*
-
-*python3 FetchKalturaQuizGrade.py {Quiz ID}*
 
 ## Debugging
 Edit the **args** parameter in *launch.json*.  The first (and only)
