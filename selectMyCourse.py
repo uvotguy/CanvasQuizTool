@@ -14,7 +14,7 @@ def selectMyCourse(client):
             ii += 1
     except canvasapi.exceptions.ResourceDoesNotExist as ex:
         print(ex)
-        exit(1)
+        exit(8)
 
     selectedCourse = int(input())
     if (selectedCourse > -1) and (selectedCourse < ii):
@@ -22,6 +22,6 @@ def selectMyCourse(client):
         print ("Fetching video quizzes for course {0}:".format(thisCourse.name))
     else:
         print("Invalid selection:  {0}.".format(selectedCourse))
-        exit(2)
+        exit(9)
 
     return(thisCourse)

@@ -14,6 +14,7 @@ class clsKalturaApi:
     kalturaEntry = None
     submissions = None
     submissionUids = None
+    keepGrade = None
 
     def __init__(self):
         config = KalturaConfiguration(globals.kalturaPid)
@@ -30,17 +31,34 @@ class clsKalturaApi:
         result = self.client.media.get(quizId)
         if result == None:
             print("\n\nEntry not found:  {0}\n\n".format(quizId))
-            exit(6)
+            exit(13)
         if result.capabilities != 'quiz.quiz':
             print("\n\nEntry is not a quiz.\n\n")
-            exit(7)
+            exit(14)
         if result.views == 0:
             print("\n\nQuiz has zero views\n\n")
-            exit(8)
+            self.submissions = []
+            return
         if result.plays == 0:
-            print("\n\nQuiz has zero plays\n\n")
-            exit(9)
+            self.submissions = []
+            return
         self.kalturaEntry = result
+
+        quiz = self.client.quiz.quiz.get(quizId)
+
+        if quiz.scoreType.value == 1:
+            self.keepGrade = 'Highest'
+        elif quiz.scoreType.value == 2:
+            self.keepGrade = 'Lowest'
+        elif quiz.scoreType.value == 3:
+            self.keepGrade = 'Latest'
+        elif quiz.scoreType.value == 4:
+            self.keepGrade = 'First'
+        elif quiz.scoreType.value == 5:
+            self.keepGrade = 'Average'
+        else:
+            print("\n\nScore type not set on Kaltura Quiz.  Don't know which to keep.")
+            exit(15)
 
     def getKalturaQuizSubmissions(self):
         self.submissions = []
@@ -63,6 +81,7 @@ class clsKalturaApi:
                 pager.pageIndex += 1
             for subm in quizSubmissions.objects:
                 self.submissions.append(subm)
+        print("\t\t\tGot {0} submissions".format(len(self.submissions)))
     
     def saveSubmissions(self, canvasCourseId):
         filename = kochUtilities.makeFilename(str(canvasCourseId), 'KalturaQuizSubmissions_' + self.kalturaEntry.id, 'tsv')

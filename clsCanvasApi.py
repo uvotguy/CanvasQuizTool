@@ -19,7 +19,7 @@ class clsCanvasApi:
             self.client = canvasapi.Canvas(globals.canvasUrl, globals.canvasToken)
         except:
             print("Error connection to the Canvas API.")
-            exit(4)
+            exit(10)
     
     def selectMyCourse(self):
         index = 0
@@ -34,7 +34,7 @@ class clsCanvasApi:
                 index += 1
         except canvasapi.exceptions.ResourceDoesNotExist as ex:
             print(ex)
-            exit(5)
+            exit(11)
 
         selectedIndex = int(input())
         if (selectedIndex > -1) and (selectedIndex < index):
@@ -43,7 +43,7 @@ class clsCanvasApi:
             self.getVideoQuizAssignments()
         else:
             print("Invalid selection:  {0}.".format(selectedIndex))
-            exit(6)
+            exit(12)
         
         allTeachers = self.selectedCourse.get_users(enrollment_type='teacher')
         for teacher in allTeachers:
@@ -72,6 +72,7 @@ class clsCanvasApi:
             self.studentInfo.append((st.display_name, st.id))
         self.studentInfo.sort()
         self.submissions = asgn.get_submissions()
+        print('\t\t\tGot {0} submissions'.format(len(self.submissions._elements)))
 
     def saveSubmissions(self, assgn, quizEntryId):
         filename = kochUtilities.makeFilename(str(self.selectedCourse.id), 'CanvasQuizTool_' + quizEntryId, 'tsv')
