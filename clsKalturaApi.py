@@ -62,7 +62,6 @@ class clsKalturaApi:
 
     def getKalturaQuizSubmissions(self):
         self.submissions = []
-        self.submissionUids = []
         pager = KalturaFilterPager()
         pager .pageIndex = 1
         pager.pageSize = 500
@@ -81,16 +80,21 @@ class clsKalturaApi:
                 pager.pageIndex += 1
             for subm in quizSubmissions.objects:
                 self.submissions.append(subm)
-        print("\t\t\tGot {0} submissions".format(len(self.submissions)))
+        print("\t\t\tGot {0} quiz submissions".format(len(self.submissions)))
     
     def saveSubmissions(self, canvasCourseId):
-        filename = kochUtilities.makeFilename(str(canvasCourseId), 'KalturaQuizSubmissions_' + self.kalturaEntry.id, 'tsv')
+        self.submissionUids = []
+        filename = kochUtilities.makeQuizFilename(str(canvasCourseId), self.kalturaEntry.id, 'KalturaQuizSubmissions', 'tsv')
         handle = open(filename, "wt")
+        msg = 'Score Type\t{0}'.format(self.keepGrade)
+        handle.write(msg + '\n')
         msg = 'Entry ID\tName\tUser Id\tCalculated Score\tSubmitted At'
         handle.write(msg + '\n')
         for subm in self.submissions:
             intDate = subm.updatedAt
             dt = datetime.fromtimestamp(intDate)
+            # We need to save the full name of the user who submitted this kaltura quiz.  It's what we use
+            # later to compare results to canvas scores.
             kalturaUser = self.client.user.get(subm.userId)
             self.submissionUids.append((kalturaUser.fullName, kalturaUser.id))
             msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, kalturaUser.fullName, kalturaUser.id, subm.calculatedScore, dt)

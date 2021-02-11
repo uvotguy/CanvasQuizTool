@@ -14,6 +14,7 @@ def getProperKalturaSubmission(userFullName,
         if kalturaSubmissionUids[index][0] == userFullName:
             if ret == None:
                 ret = kalSubm
+                index += 1
                 continue
             if keepGrade == 'Highest':
                 if kalSubm.calculatedScore > ret.calculatedScore:

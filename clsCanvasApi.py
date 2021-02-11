@@ -67,15 +67,18 @@ class clsCanvasApi:
     
     def getCanvasVideoQuizSubmissions(self, asgn):
         self.studentInfo.clear()
+        self.submissions = []
         self.students = asgn.get_gradeable_students()
         for st in self.students:
             self.studentInfo.append((st.display_name, st.id))
         self.studentInfo.sort()
-        self.submissions = asgn.get_submissions()
-        print('\t\t\tGot {0} submissions'.format(len(self.submissions._elements)))
+        submissions = asgn.get_submissions()
+        for subm in submissions:
+            self.submissions.append(subm)
+        print('\t\t\tGot {0} grades'.format(len(self.submissions)))
 
     def saveSubmissions(self, assgn, quizEntryId):
-        filename = kochUtilities.makeFilename(str(self.selectedCourse.id), 'CanvasQuizTool_' + quizEntryId, 'tsv')
+        filename = kochUtilities.makeQuizFilename(str(self.selectedCourse.id), quizEntryId, 'CanvasQuizGrades', 'tsv')
         handle = open(filename, "wt")
         handle.write('Course\t{0}\n'.format(self.selectedCourse.name))
         handle.write('Teacher(s)\n')
@@ -104,7 +107,4 @@ class clsCanvasApi:
             #print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}'.format(subm.assignment_id, name, uid, subm.entered_grade, assgn.points_possible, subm.attempt, subm.submitted_at))
             handle.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n'.format(subm.assignment_id, name, uid, subm.entered_grade, assgn.points_possible, subm.attempt, subm.submitted_at))
         handle.close()
-
-        #print("\n\nOutput written to {0}".format(filename))
-        #print("done")
     

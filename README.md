@@ -1,4 +1,6 @@
 # ReportCourseQuizResults
+
+
 This tool can be used to dump student assignment grades for a course.  The tool consists
 of three parts:  a part to gather information from Canvas, a part to gather quiz submissions
 from Kaltura, and a third part to compare the results. As it loops over course assignments,
