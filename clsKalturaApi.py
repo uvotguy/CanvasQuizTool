@@ -3,7 +3,7 @@ import os
 from KalturaClient import *
 from KalturaClient.Plugins.Core import *
 from KalturaClient.Plugins.Quiz import *
-import kochUtilities
+import util
 import globals
 from datetime import datetime
 
@@ -84,7 +84,7 @@ class clsKalturaApi:
     
     def saveSubmissions(self, canvasCourseId):
         self.submissionUids = []
-        filename = kochUtilities.makeQuizFilename(str(canvasCourseId), self.kalturaEntry.id, 'KalturaQuizSubmissions', 'tsv')
+        filename = util.makeQuizFilename(str(canvasCourseId), self.kalturaEntry.id, 'KalturaQuizSubmissions', 'tsv')
         handle = open(filename, "wt")
         msg = 'Score Type\t{0}'.format(self.keepGrade)
         handle.write(msg + '\n')

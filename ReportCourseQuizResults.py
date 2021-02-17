@@ -2,7 +2,7 @@ from os import write
 from clsKalturaApi import clsKalturaApi
 from clsCanvasApi import clsCanvasApi
 import globals
-import kochUtilities
+import util
 
 def getProperKalturaSubmission(userFullName,
                                keepGrade,
@@ -99,7 +99,7 @@ myKaltura = clsKalturaApi()
 
 print('\n\n' + myCanvas.selectedCourse.name)
 
-ReportFilename = kochUtilities.makeFilename(myCanvas.selectedCourse.id, 'ReportCourseQuizResults', 'tsv')
+ReportFilename = util.makeFilename(myCanvas.selectedCourse.id, 'ReportCourseQuizResults', 'tsv')
 reportFileHandle = open(ReportFilename, "wt")
 msg = "Course:  \t{0}".format(myCanvas.selectedCourse.name)
 print(msg)

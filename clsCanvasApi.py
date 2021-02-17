@@ -1,7 +1,7 @@
 import canvasapi
 import globals
 import re
-import kochUtilities
+import util
 
 class clsCanvasApi:
     # Class variables shared by all instances of the class
@@ -28,7 +28,7 @@ class clsCanvasApi:
             courses = self.client.get_courses()
             for course in courses:
                 if hasattr(course, 'course_code'):
-                    print('{0}) {1}'.format(index, course))
+                    print('{0}) {1}'.format(index, course.name))
                 else:
                     print('{0}) unavailable {1}'.format(index, course.id))
                 index += 1
@@ -78,7 +78,7 @@ class clsCanvasApi:
         print('\t\t\tGot {0} grades'.format(len(self.submissions)))
 
     def saveSubmissions(self, assgn, quizEntryId):
-        filename = kochUtilities.makeQuizFilename(str(self.selectedCourse.id), quizEntryId, 'CanvasQuizGrades', 'tsv')
+        filename = util.makeQuizFilename(str(self.selectedCourse.id), quizEntryId, 'CanvasQuizGrades', 'tsv')
         handle = open(filename, "wt")
         handle.write('Course\t{0}\n'.format(self.selectedCourse.name))
         handle.write('Teacher(s)\n')
