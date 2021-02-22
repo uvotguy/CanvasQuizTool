@@ -72,7 +72,7 @@ def writeGradeResults(fileHandle,
                     canvasGrade = ''
                     diff = '*'
                 elif (type(canvasSubm.entered_score) is float):
-                    if (canvasSubm.entered_score != kalturaPoints):
+                    if (round(canvasSubm.entered_score,2) != round(kalturaPoints,2)):
                         diff = '*'
                     canvasGrade = '{0:.2f}'.format(canvasSubm.entered_score)
                 else:
