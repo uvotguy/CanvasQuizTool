@@ -67,6 +67,13 @@ def writeGradeResults(fileHandle,
         canvasGrade = ''
         diff = ''
         for canvasSubm in canvasSubmissions:
+            if canvasSubm.points_deducted is None:
+                deduction = 0.0
+            else:
+                deduction = canvasSubm.points_deducted
+            late = ''
+            if canvasSubm.late == True:
+                late = 'LATE'
             if canvasSubm.user_id == canvasStudentUid:
                 if (canvasSubm.entered_score == None):
                     canvasGrade = ''
@@ -79,7 +86,7 @@ def writeGradeResults(fileHandle,
                     canvasGrade = canvasSubm.entered_score
                     diff = '*'
                 # If there is no matching Canvas submission, the Canvas data will be blank.
-                msg = '{0}\t{1}\t{2}\t{3}\t{4:.0%}\t{5:.2f}\t{6}\t{7}\t{8}\n'.format(
+                msg = '{0}\t{1}\t{2}\t{3}\t{4:.0%}\t{5:.2f}\t{6}\t{7}\t{8}\t{9}\t{10:.2f}\n'.format(
                                 assgn.name,
                                 entryId, 
                                 str(assgn.due_at),
@@ -88,7 +95,9 @@ def writeGradeResults(fileHandle,
                                 kalturaPoints,
                                 assgn.points_possible,
                                 canvasGrade,
-                                diff)
+                                diff,
+                                late,
+                                deduction)
                 fileHandle.write(msg)
                 break
         fileHandle.flush()
@@ -112,7 +121,7 @@ for teach in myCanvas.teachers:
     msg = "\t{0}\n".format(teach.name)
     reportFileHandle.write(msg)
 
-msg = 'Assignment\tEntry Id\tDue Date\tStudent\tKaltura Score\tKaltura Points\tPoints Possible\tCanvas Grade\tDifferent\n'
+msg = 'Assignment\tEntry Id\tDue Date\tStudent\tKaltura Score\tKaltura Points\tPoints Possible\tCanvas Grade\tDifferent\tLate\tDeduction\n'
 reportFileHandle.write(msg)
 
 # Loop over all course assignments
