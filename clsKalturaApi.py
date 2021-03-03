@@ -28,19 +28,20 @@ class clsKalturaApi:
         self.client.setKs(ks)
 
     def getKalturaQuizEntry(self, quizId):
+        self.kalturaEntry = None
+        self.submissions = []
         result = self.client.media.get(quizId)
         if result == None:
-            print("\n\nEntry not found:  {0}\n\n".format(quizId))
+            print("\t\t\tEntry not found:  {0}".format(quizId))
             exit(13)
         if result.capabilities != 'quiz.quiz':
-            print("\n\nEntry is not a quiz.\n\n")
+            print("\t\t\tEntry is not a quiz.")
             exit(14)
         if result.views == 0:
-            print("\n\nQuiz has zero views\n\n")
-            self.submissions = []
+            print("\t\t\tQuiz has zero views\n\n")
             return
         if result.plays == 0:
-            self.submissions = []
+            print("\t\t\tQuiz has zero plays\n\n")
             return
         self.kalturaEntry = result
 

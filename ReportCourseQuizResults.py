@@ -135,6 +135,8 @@ for assgn in myCanvas.assignments:
 
         print('\t\tFetching Kaltura quiz submissions ...')
         myKaltura.getKalturaQuizEntry(entryId)
+        if myKaltura.kalturaEntry is None:
+            continue
         myKaltura.getKalturaQuizSubmissions()
         myKaltura.saveSubmissions(myCanvas.selectedCourse.id)
 
