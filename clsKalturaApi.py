@@ -62,7 +62,9 @@ class clsKalturaApi:
             exit(15)
 
     def getKalturaQuizSubmissions(self):
-        self.submissions = []
+        if self.kalturaEntry is None:
+            print("\tKaltura entry object is null")
+            return
         pager = KalturaFilterPager()
         pager .pageIndex = 1
         pager.pageSize = 500
