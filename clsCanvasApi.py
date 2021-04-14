@@ -53,7 +53,7 @@ class clsCanvasApi:
 
     def getVideoQuizAssignments(self):
         # Make a list of all assignments
-        self.assignments = self.selectedCourse.get_assignments()
+        self.assignments = self.selectedCourse.get_assignments(order_by="due_at")
     
     def isVideoQuizAssignment(self, asgn):
         if hasattr(asgn, 'external_tool_tag_attributes'):

@@ -15,6 +15,7 @@ class clsKalturaApi:
     submissions = None
     submissionUids = None
     keepGrade = None
+    students = []
 
     def __init__(self):
         config = KalturaConfiguration(globals.kalturaPid)
@@ -98,8 +99,17 @@ class clsKalturaApi:
             dt = datetime.fromtimestamp(intDate)
             # We need to save the full name of the user who submitted this kaltura quiz.  It's what we use
             # later to compare results to canvas scores.
-            kalturaUser = self.client.user.get(subm.userId)
-            self.submissionUids.append((kalturaUser.fullName, kalturaUser.id))
-            msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, kalturaUser.fullName, kalturaUser.id, subm.calculatedScore, dt)
+            studentInfo = None
+            for thisStudent in self.students:
+                if thisStudent.id == subm.userId:
+                    studentInfo = thisStudent
+                    break
+
+            if studentInfo == None:
+                studentInfo = self.client.user.get(subm.userId)
+                self.students.append(studentInfo)
+
+            self.submissionUids.append((studentInfo.fullName, studentInfo.id))
+            msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, studentInfo.fullName, studentInfo.id, subm.calculatedScore, dt)
             handle.write(msg + '\n')
         handle.close()

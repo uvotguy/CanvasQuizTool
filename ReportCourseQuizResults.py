@@ -23,14 +23,14 @@ def getProperKalturaSubmission(userFullName,
                 if kalSubm.calculatedScore < ret.calculatedScore:
                     ret = kalSubm
             elif keepGrade == 'Latest':
-                if kalSubm.dtCreated > ret.dtCreated:
+                if kalSubm.createdAt > ret.createdAt:
                     ret = kalSubm
             elif keepGrade == 'First':
-                if kalSubm.dtCreated < ret.dtCreated:
+                if kalSubm.createdAt < ret.createdAt:
                     ret = kalSubm
             elif keepGrade == 'Average':
-                # I'm guessing this is equivalent to 'Latest'
-                if kalSubm.dtCreated > ret.dtCreated:
+                # I'm guessing this is equivalent to 'Latest' since averaging is done by Kaltura quiz engine.
+                if kalSubm.createdAt > ret.createdAt:
                     ret = kalSubm
             else:
                 print("\n\nUnknown 'keepGrade' type:  " + keepGrade)
@@ -125,10 +125,17 @@ msg = 'Assignment\tEntry Id\tDue Date\tStudent\tKaltura Score\tKaltura Points\tP
 reportFileHandle.write(msg)
 
 # Loop over all course assignments
+# nn = "Video Quiz 05-03 Microbial Growth and Its Control"
+# skipping = True 
 for assgn in myCanvas.assignments:
     entryId = myCanvas.isVideoQuizAssignment(assgn)
     if entryId != None:
         print('\t' + assgn.name)
+        # if assgn.name == nn:
+        #     skipping = False
+        # elif skipping == True:
+        #     continue
+
         print('\t\tFetching Canvas quiz submissions ...')
         myCanvas.getCanvasVideoQuizSubmissions(assgn)
         myCanvas.saveSubmissions(assgn, entryId)
