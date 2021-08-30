@@ -85,7 +85,32 @@ class clsKalturaApi:
             for subm in quizSubmissions.objects:
                 self.submissions.append(subm)
         print("\t\t\tGot {0} quiz submissions".format(len(self.submissions)))
-    
+ 
+    def getKalturaQuizUserSubmissions(self, uid):
+        if self.kalturaEntry is None:
+            print("\tKaltura entry object is null")
+            return
+        pager = KalturaFilterPager()
+        pager .pageIndex = 1
+        pager.pageSize = 500
+
+        quizFilter = KalturaQuizUserEntryFilter()
+        quizFilter.userIdEqualCurrent = KalturaNullableBoolean.FALSE_VALUE
+        quizFilter.userIdEqual = uid
+        quizFilter.entryIdEqual = self.kalturaEntry.id
+        quizFilter.statusEqual = KalturaUserEntryStatus.QUIZ_SUBMITTED
+        done = False
+        while done == False:
+            quizSubmissions = self.client.userEntry.list(quizFilter, pager)
+            if len(quizSubmissions.objects) == 0:
+                done = True
+                continue
+            else:
+                pager.pageIndex += 1
+            for subm in quizSubmissions.objects:
+                self.submissions.append(subm)
+        print("\t\t\tGot {0} quiz submissions".format(len(self.submissions)))  
+ 
     def saveSubmissions(self, canvasCourseId):
         self.submissionUids = []
         filename = util.makeQuizFilename(str(canvasCourseId), self.kalturaEntry.id, 'KalturaQuizSubmissions', 'tsv')
@@ -113,3 +138,6 @@ class clsKalturaApi:
             msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, studentInfo.fullName, studentInfo.id, subm.calculatedScore, dt)
             handle.write(msg + '\n')
         handle.close()
+    
+    def deleteSubmission(self, submissionId):
+        self.client.userEntry.delete(submissionId)

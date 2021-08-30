@@ -93,3 +93,7 @@ On windows:
 ## Debugging
 Edit the **args** parameter in *launch.json*.  The first (and only)
 argument is the target Entry ID.  Run the code in debug mode.
+
+## Deleting Quiz Submissions
+Use the *ClearStudentQuizSubmissions* utility to remove quiz submissions for a given quiz for a given student.
+The program **DOES NOT** check submission date.
