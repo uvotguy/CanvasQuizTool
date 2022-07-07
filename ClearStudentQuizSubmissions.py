@@ -17,8 +17,8 @@ while done == False:
         uid = input()
         if uid == '':
             exit(0)
-        if uid.endswith("@psu.edu") == False:
-            uid += "@psu.edu"
+        if uid.endswith(globals.kalturaEmailDomain) == False:
+            uid += globals.kalturaEmailDomain
 
         myKaltura.getKalturaQuizUserSubmissions(uid)
 

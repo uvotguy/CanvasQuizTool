@@ -47,3 +47,9 @@ try:
 except:
     print('/n/nOops!  You forgot to set the KALTURA_USER environment variable./n/n')
     exit(7)
+
+try:
+    kalturaEmailDomain = os.environ['KALTURA_EMAIL_DOMAIN']
+except:
+    print('/n/nOops!  You forgot to set the KALTURA_EMAIL_DOMAIN environment variable./n/n')
+    exit(8)
