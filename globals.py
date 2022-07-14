@@ -26,9 +26,9 @@ except:
 
 try:
     value = os.environ['CANVAS_USERS_TO_IGNORE']
-    ignoreUids = value.split(',')
+    ignoreNames = value.split(',')
 except:
-    ignoreUids = []     # Empty list
+    ignoreNames = []     # Empty list
 
 try:
     kalturaPid = os.environ['KALTURA_PID']

@@ -47,7 +47,7 @@ class clsCanvasApi:
         
         allTeachers = self.selectedCourse.get_users(enrollment_type='teacher')
         for teacher in allTeachers:
-            if teacher.sis_user_id in globals.ignoreUids:
+            if teacher.name in globals.ignoreNames:
                 continue
             self.teachers.append(teacher)
 

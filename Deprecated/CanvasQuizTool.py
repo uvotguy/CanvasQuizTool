@@ -7,9 +7,6 @@ import selectMyVideoQuizAssignment
 import kochUtilities
 import getEnvironmentVariables
 
-def PromptForCourse(client):
-    a = 3
-
 def CanvasQuizTool(client):
     global targetUserId, canvasToken, canvasUrl, kalturaUrl, ignoreUids
 

@@ -77,6 +77,8 @@ Also install the Kaltura API Client for python:
 
 *pip install KalturaApiClient*
 
+If you have to install additional modules, please submit an issue.  We will add it/them here.
+
 ## Run the Program
 The top level python program *ReportCourseQuizResults.py* prompts the user to select a course from
 a list of Canvas courses he/she teaches.  It queries Canvas for a list of assignments, and filters
@@ -97,4 +99,5 @@ argument is the target Entry ID.  Run the code in debug mode.
 
 ## Deleting Quiz Submissions
 Use the *ClearStudentQuizSubmissions* utility to remove quiz submissions for a given quiz for a given student.
-The program **DOES NOT** check submission date.
+The program **DOES NOT** check submission date.  It will *delete* entry submissions from your Kaltura instance.
+Use it carefully.
