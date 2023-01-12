@@ -6,6 +6,7 @@ from KalturaClient.Plugins.Quiz import *
 import util
 import globals
 from datetime import datetime
+import clsUnknownPerson
 
 class clsKalturaApi:
     # Class variables shared by all instances of the class
@@ -131,7 +132,12 @@ class clsKalturaApi:
                     break
 
             if studentInfo == None:
-                studentInfo = self.client.user.get(subm.userId)
+                try:
+                    studentInfo = self.client.user.get(subm.userId)
+                    print("got Kaltura student")
+                except:
+                    print("Uh oh!  Cannot get student from Kaltura:  ", subm.userId)
+                    studentInfo = clsUnknownPerson.clsUnknownPerson()
                 self.students.append(studentInfo)
 
             self.submissionUids.append((studentInfo.fullName, studentInfo.id))

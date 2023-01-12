@@ -3,6 +3,7 @@ from clsKalturaApi import clsKalturaApi
 from clsCanvasApi import clsCanvasApi
 import globals
 import util
+import clsUnknownPerson
 
 def getProperKalturaSubmission(userFullName,
                                keepGrade,
