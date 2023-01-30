@@ -134,7 +134,7 @@ class clsKalturaApi:
             if studentInfo == None:
                 try:
                     studentInfo = self.client.user.get(subm.userId)
-                    print("got Kaltura student")
+                    # print("got Kaltura student")
                 except:
                     print("Uh oh!  Cannot get student from Kaltura:  ", subm.userId)
                     studentInfo = clsUnknownPerson.clsUnknownPerson()

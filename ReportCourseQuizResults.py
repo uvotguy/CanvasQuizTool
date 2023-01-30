@@ -12,7 +12,10 @@ def getProperKalturaSubmission(userFullName,
     ret = None
     index = 0
     for kalSubm in kalturaSubmissions:
-        if kalturaSubmissionUids[index][0] == userFullName:
+        if kalturaSubmissionUids[index][0].startswith(userFullName):
+            if kalturaSubmissionUids[index][0] != userFullName:
+                print("!!!  Assuming " +kalturaSubmissionUids[index][0] +
+                ' and ' + userFullName + ' are the same person.')
             if ret == None:
                 ret = kalSubm
                 index += 1
@@ -87,16 +90,16 @@ def writeGradeResults(fileHandle,
                     canvasGrade = canvasSubm.entered_score
                     diff = '*'
                 # If there is no matching Canvas submission, the Canvas data will be blank.
-                msg = '{0}\t{1}\t{2}\t{3}\t{4:.0%}\t{5:.2f}\t{6}\t{7}\t{8}\t{9}\t{10:.2f}\n'.format(
+                msg = '{0}\t{1}\t{2:.0%}\t{3:.2f}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10:.2f}\n'.format(
                                 assgn.name,
-                                entryId, 
-                                str(assgn.due_at),
                                 canvasStudentFullName,
                                 kalturaPercent,
                                 kalturaPoints,
                                 assgn.points_possible,
-                                canvasGrade,
                                 diff,
+                                entryId, 
+                                str(assgn.due_at),
+                                canvasGrade,
                                 late,
                                 deduction)
                 fileHandle.write(msg)
@@ -122,7 +125,7 @@ for teach in myCanvas.teachers:
     msg = "\t{0}\n".format(teach.name)
     reportFileHandle.write(msg)
 
-msg = 'Assignment\tEntry Id\tDue Date\tStudent\tKaltura Score\tKaltura Points\tPoints Possible\tCanvas Grade\tDifferent\tLate\tDeduction\n'
+msg = 'Assignment\tStudent\tKaltura Score\tKaltura Points\tPoints Possible\tDifferent\tEntry Id\tDue Date\tCanvas Grade\tLate\tDeduction\n'
 reportFileHandle.write(msg)
 
 # Loop over all course assignments
