@@ -141,7 +141,8 @@ class clsKalturaApi:
                 self.students.append(studentInfo)
 
             self.submissionUids.append((studentInfo.fullName, studentInfo.id))
-            msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, studentInfo.fullName, studentInfo.id, subm.calculatedScore, dt)
+            sortableName = '{0}, {1}'.format(studentInfo.lastName, studentInfo.firstName)
+            msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, sortableName, studentInfo.id, subm.calculatedScore, dt)
             handle.write(msg + '\n')
         handle.close()
     

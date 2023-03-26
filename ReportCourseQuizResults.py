@@ -49,12 +49,14 @@ def writeGradeResults(fileHandle,
                       kalturaSubmissions,
                       kalturaSubmissionUids,
                       keepGrade,
-                      canvasSubmissions):
+                      canvasSubmissions,
+                      kalturaStudents):
     print('\t\tSaving results ...')
     # We want the results to be sorted in order of student name.
     for si in canvasStudentsInfo:
         canvasStudentFullName = si[0]
         canvasStudentUid = si[1]
+
         # print(canvasStudentFullName, canvasStudentUid)
         # Loop through Kaltura submission data and process all for this student
         kalSubm = getProperKalturaSubmission(canvasStudentFullName,
@@ -65,6 +67,27 @@ def writeGradeResults(fileHandle,
             # Student has no Kaltura submissions.  He/she hasn't taken the video quiz.
             # Onto next student ...
             continue
+
+        studentFirstName = ""
+        studentLastName = ""
+        for xx in kalturaStudents:
+            if (xx.fullName.startswith(canvasStudentFullName)):
+                studentFirstName = xx.firstName
+                studentLastName = xx.lastName
+                break;
+        if (studentFirstName == ""):
+            print(("Student not found:  {0}").format(canvasStudentFullName))
+            continue
+            #raise Exception()
+        if (studentLastName == ""):
+            print(("Student not found:  {0}").format(canvasStudentFullName))
+            continue
+            #raise Exception(("Student not found:  {0}").format(canvasStudentFullName))
+        if (xx.fullName != canvasStudentFullName):
+            print("!!!  Assuming " + xx.fullName + ' and ' + canvasStudentFullName + ' are the same person.')
+
+        sortableName = ("{0}, {1}").format(studentLastName, studentFirstName)
+
         kalturaPercent = kalSubm.calculatedScore
         kalturaPoints = kalturaPercent * assgn.points_possible
         # Find corresponding Canvas grade
@@ -92,7 +115,7 @@ def writeGradeResults(fileHandle,
                 # If there is no matching Canvas submission, the Canvas data will be blank.
                 msg = '{0}\t{1}\t{2:.0%}\t{3:.2f}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10:.2f}\n'.format(
                                 assgn.name,
-                                canvasStudentFullName,
+                                sortableName,
                                 kalturaPercent,
                                 kalturaPoints,
                                 assgn.points_possible,
@@ -159,7 +182,8 @@ for assgn in myCanvas.assignments:
                           myKaltura.submissions,
                           myKaltura.submissionUids,
                           myKaltura.keepGrade,
-                          myCanvas.submissions)
+                          myCanvas.submissions,
+                          myKaltura.students)
 
 reportFileHandle.close()
 print('\nOutput written to ' + str(ReportFilename))
