@@ -1,0 +1,6 @@
+{
+    "OutputFolder" : "CanvasQuizResults",
+    "EmailDomain" : "@psu.edu",
+    "IgnoreNames" : "",
+    "KalturaUrl" : "https://www.kaltura.com/"
+}

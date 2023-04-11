@@ -4,147 +4,155 @@ from KalturaClient import *
 from KalturaClient.Plugins.Core import *
 from KalturaClient.Plugins.Quiz import *
 import util
-import globals
+from config import config
 from datetime import datetime
-import clsUnknownPerson
+from pathlib import Path
 
 class clsKalturaApi:
     # Class variables shared by all instances of the class
     # In C/C++ these are known as "static variables".
     client = None
-    kalturaEntry = None
-    submissions = None
-    submissionUids = None
-    keepGrade = None
-    students = []
+    appConfig = None
+    entries = []        # List of Kaltura entries already queried.
+    quizzes = []        # List of Kaltura quiz objects, one per entry
+    submissions = []    # Master list of all submissions for all quizzes in this course
 
-    def __init__(self):
-        config = KalturaConfiguration(globals.kalturaPid)
-        config.serviceUrl = "https://www.kaltura.com/"
-        self.client = KalturaClient(config)
+    def __init__(self, cc):
+        self.appConfig = cc
+        kalConfig = KalturaConfiguration()
+        self.client = KalturaClient(kalConfig)
         ks = self.client.session.start(
-                    globals.kalturaSecret,
-                    globals.kalturaUser,
+                    self.appConfig.kalturaSecret,
+                    self.appConfig.kalturaUser,
                     KalturaSessionType.ADMIN,
-                    globals.kalturaPid)
+                    self.appConfig.kalturaPid)
         self.client.setKs(ks)
 
-    def getKalturaQuizEntry(self, quizId):
-        self.kalturaEntry = None
-        self.submissions = []
-        result = self.client.media.get(quizId)
+    def getKalturaQuizEntry(self, entryId):
+        result = self.client.media.get(entryId)
         if result == None:
-            print("\t\t\tEntry not found:  {0}".format(quizId))
+            print("\t\tEntry not found:  {0}".format(entryId))
             exit(13)
         if result.capabilities != 'quiz.quiz':
-            print("\t\t\tEntry is not a quiz.")
+            print("\t\tEntry is not a quiz.")
             exit(14)
-        if result.views == 0:
-            print("\t\t\tQuiz has zero views\n\n")
-            return
-        if result.plays == 0:
-            print("\t\t\tQuiz has zero plays\n\n")
-            return
-        self.kalturaEntry = result
+        self.entries.append(result)
+      
+        # Got the Kaltura entry object.  Now fetch the corresponding
+        # quiz object.
+        quiz = self.client.quiz.quiz.get(entryId)
+        if quiz == None:  
+            print("\t\tKaltura quiz object not found for entry")
+            exit(15)
+        self.quizzes.append(quiz)
 
-        quiz = self.client.quiz.quiz.get(quizId)
+    # Fetch a Kaltura entry object for a given Entry ID. 
+    def getEntry(self, id):
+        for entr in self.entries:
+            if entr.id == id:
+                return entr
+        print ("Uh oh!  Entry not found in list.  This shouldn't happen.")
+        exit(16)
 
-        if quiz.scoreType.value == 1:
-            self.keepGrade = 'Highest'
-        elif quiz.scoreType.value == 2:
-            self.keepGrade = 'Lowest'
-        elif quiz.scoreType.value == 3:
-            self.keepGrade = 'Latest'
-        elif quiz.scoreType.value == 4:
-            self.keepGrade = 'First'
-        elif quiz.scoreType.value == 5:
-            self.keepGrade = 'Average'
+    # Fetch a Kaltura quiz object for a given Entry ID.  Quiz objects do not
+    # have the entry ID of the quiz.  Whaaaa??  Get the index of the entry
+    # and use that.
+    def getQuiz(self, id):
+        ii = 0
+        entry = None
+        for entr in self.entries:
+            if entr.id == id:
+                entry = entr
+                break
+            ii += 1
+        if entry == None:
+            print ("Uh oh!  Quiz object not found in list.  This shouldn't happen.")
+            exit(17)
+        return self.quizzes[ii]
+
+    def getKalturaQuizSubmissions(self, entryId):
+        pager = KalturaFilterPager()
+        pager .pageIndex = 1
+        pager.pageSize = 500
+
+        quizFilter = KalturaQuizUserEntryFilter()
+        quizFilter.userIdEqualCurrent = KalturaNullableBoolean.FALSE_VALUE
+        quizFilter.entryIdEqual = entryId
+        quizFilter.statusEqual = KalturaUserEntryStatus.QUIZ_SUBMITTED
+        done = False
+        while done == False:
+            quizSubmissions = self.client.userEntry.list(quizFilter, pager)
+            if len(quizSubmissions.objects) == 0:
+                done = True
+                continue
+            else:
+                pager.pageIndex += 1
+            for subm in quizSubmissions.objects:
+                self.submissions.append(subm)
+        print("\t\tGot {0} Kaltura quiz submissions".format(len(self.submissions)))
+
+    def getCorrectQuizSubmission(self, entryId, userId, keepGrade):
+        userRecords = []
+        for subm in self.submissions:
+            if (subm.entryId == entryId) and (subm.userId == userId):
+                userRecords.append(subm)
+
+        if keepGrade == 'Latest':
+            latestDate = 0
+            keepRecord = None
+            for subm in userRecords:
+                if subm.updatedAt >= latestDate:
+                    keepRecord = subm
+                    latestDate = subm.updatedAt
+        elif keepGrade == 'Highest':
+            highest = -1.0
+            keepRecord = None
+            for subm in userRecords:
+                if subm.calculatedScore  >= highest:
+                    keepRecord = subm
+                    highest = subm.calculatedScore
+        else:
+            raise "Uh oh!  Grade type not handled."
+        
+        return keepRecord
+
+    def saveSubmissions(self, courseFolder): 
+        filename = Path.joinpath(courseFolder, 'kalturaSubmissions.tsv')
+        kalturaFile = open(filename, 'wt')
+        kalturaFile.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n'
+                                .format('Assignment', 
+                                        'Entry ID', 
+                                        'User ID',
+                                        'Keep Grade',
+                                        'Calculated Score',
+                                        'Created At',
+                                        'Update At'))
+        handle = open(filename, "wt")
+        for subm in self.submissions:
+            entry = self.getEntry(subm.entryId)
+            quiz = self.getQuiz(subm.entryId)
+            keepGrade = self.keepGradeToText(quiz.scoreType.value)
+            kalturaFile.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n'
+                            .format(entry.name, 
+                                    subm.entryId, 
+                                    subm.userId,
+                                    keepGrade,
+                                    round(subm.score,2),
+                                    util.unixTimeToDateString(subm.createdAt),
+                                    util.unixTimeToDateString(subm.updatedAt)))
+        handle.close()
+
+    def keepGradeToText(self, value):
+        if value == 1:
+            return 'Highest'
+        elif value == 2:
+            return 'Lowest'
+        elif value == 3:
+            return'Latest'
+        elif value == 4:
+            return 'First'
+        elif value == 5:
+            return 'Average'
         else:
             print("\n\nScore type not set on Kaltura Quiz.  Don't know which to keep.")
-            exit(15)
-
-    def getKalturaQuizSubmissions(self):
-        if self.kalturaEntry is None:
-            print("\tKaltura entry object is null")
-            return
-        pager = KalturaFilterPager()
-        pager .pageIndex = 1
-        pager.pageSize = 500
-
-        quizFilter = KalturaQuizUserEntryFilter()
-        quizFilter.userIdEqualCurrent = KalturaNullableBoolean.FALSE_VALUE
-        quizFilter.entryIdEqual = self.kalturaEntry.id
-        quizFilter.statusEqual = KalturaUserEntryStatus.QUIZ_SUBMITTED
-        done = False
-        while done == False:
-            quizSubmissions = self.client.userEntry.list(quizFilter, pager)
-            if len(quizSubmissions.objects) == 0:
-                done = True
-                continue
-            else:
-                pager.pageIndex += 1
-            for subm in quizSubmissions.objects:
-                self.submissions.append(subm)
-        print("\t\t\tGot {0} quiz submissions".format(len(self.submissions)))
- 
-    def getKalturaQuizUserSubmissions(self, uid):
-        if self.kalturaEntry is None:
-            print("\tKaltura entry object is null")
-            return
-        pager = KalturaFilterPager()
-        pager .pageIndex = 1
-        pager.pageSize = 500
-
-        quizFilter = KalturaQuizUserEntryFilter()
-        quizFilter.userIdEqualCurrent = KalturaNullableBoolean.FALSE_VALUE
-        quizFilter.userIdEqual = uid
-        quizFilter.entryIdEqual = self.kalturaEntry.id
-        quizFilter.statusEqual = KalturaUserEntryStatus.QUIZ_SUBMITTED
-        done = False
-        while done == False:
-            quizSubmissions = self.client.userEntry.list(quizFilter, pager)
-            if len(quizSubmissions.objects) == 0:
-                done = True
-                continue
-            else:
-                pager.pageIndex += 1
-            for subm in quizSubmissions.objects:
-                self.submissions.append(subm)
-        print("\t\t\tGot {0} quiz submissions".format(len(self.submissions)))  
- 
-    def saveSubmissions(self, canvasCourseId):
-        self.submissionUids = []
-        filename = util.makeQuizFilename(str(canvasCourseId), self.kalturaEntry.id, 'KalturaQuizSubmissions', 'tsv')
-        handle = open(filename, "wt")
-        msg = 'Score Type\t{0}'.format(self.keepGrade)
-        handle.write(msg + '\n')
-        msg = 'Entry ID\tName\tUser Id\tCalculated Score\tSubmitted At'
-        handle.write(msg + '\n')
-        for subm in self.submissions:
-            intDate = subm.updatedAt
-            dt = datetime.fromtimestamp(intDate)
-            # We need to save the full name of the user who submitted this kaltura quiz.  It's what we use
-            # later to compare results to canvas scores.
-            studentInfo = None
-            for thisStudent in self.students:
-                if thisStudent.id == subm.userId:
-                    studentInfo = thisStudent
-                    break
-
-            if studentInfo == None:
-                try:
-                    studentInfo = self.client.user.get(subm.userId)
-                    # print("got Kaltura student")
-                except:
-                    print("Uh oh!  Cannot get student from Kaltura:  ", subm.userId)
-                    studentInfo = clsUnknownPerson.clsUnknownPerson()
-                self.students.append(studentInfo)
-
-            self.submissionUids.append((studentInfo.fullName, studentInfo.id))
-            sortableName = '{0}, {1}'.format(studentInfo.lastName, studentInfo.firstName)
-            msg = '{0}\t{1}\t{2}\t{3}\t{4}Z'.format(subm.entryId, sortableName, studentInfo.id, subm.calculatedScore, dt)
-            handle.write(msg + '\n')
-        handle.close()
-    
-    def deleteSubmission(self, submissionId):
-        self.client.userEntry.delete(submissionId)
+            exit(18)
