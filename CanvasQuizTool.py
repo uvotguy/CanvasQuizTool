@@ -1,9 +1,8 @@
-from os import write
+from pathlib import Path
 from clsKalturaApi import clsKalturaApi
 from clsCanvasApi import clsCanvasApi
 from config import config
-import util
-from pathlib import Path
+from KalturaClient.exceptions import (KalturaException, KalturaClientException)
 
 appConfig = config()
 myCanvas = clsCanvasApi(appConfig)
@@ -20,8 +19,8 @@ for entryId in myCanvas.assignmentEntryIds:
     # like a gradebook.
     try:
         myKaltura.getKalturaQuizEntry(entryId)
-    except:
-        print('\t\Ignoring quiz.')
+    except KalturaClientException:
+        print(r"\t\Ignoring quiz.")
         continue
 
     # Fetch all Kaltura submissions for this quiz.  Note that Kaltura has
@@ -86,7 +85,7 @@ for asgn in myCanvas.assignments:
             if len(gradebook.grades) == 0:
                 grade = None
             elif len(gradebook.grades) > 1:
-                raise ("Canvas gradebook has multiple grades for user.  Assignment={0};UserId={1};")
+                raise ("Canvas gradebook has multiple grades for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
             else:
                 if gradebook.grades[0] == '':
                     grade = None
@@ -96,7 +95,7 @@ for asgn in myCanvas.assignments:
             if len(gradebook.late) == 0:
                 late = ''
             elif len(gradebook.grades) > 1:
-                raise ("Canvas gradebook has multiple LATEs for user.  Assignment={0};UserId={1};")
+                raise ("Canvas gradebook has multiple LATEs for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
             else:
                 if gradebook.late[0] == '':
                     late = ''
@@ -106,7 +105,7 @@ for asgn in myCanvas.assignments:
             if len(gradebook.deductions) == 0:
                 deduction = ''
             elif len(gradebook.grades) > 1:
-                raise ("Canvas gradebook has multiple DEDUCTIONs for user.  Assignment={0};UserId={1};")
+                raise ("Canvas gradebook has multiple DEDUCTIONs for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
             else:
                 if gradebook.deductions[0] == '':
                     strDeduction = ''

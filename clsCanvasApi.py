@@ -1,12 +1,11 @@
-import canvasapi
-from config import config
 import re
-import util
-from clsGradebookEntry import clsGradebookEntry
 from slugify import slugify
 from pathlib import Path
-from os import write
+import canvasapi
+from config import config
+from clsGradebookEntry import clsGradebookEntry
 
+import util
 class clsCanvasApi:
     # Class variables shared by all instances of the class
     # In C/C++ these are known as "static variables".

@@ -62,18 +62,6 @@ class config:
             exit(3)
 
         try:
-            self.kalturaUrl = os.environ['KALTURA_URL']
-        except:
-            print('\n\nOops!  You forgot to set the KALTURA_URL environment variable.\n\n')
-            exit(4)
-
-        try:
-            value = os.environ['CANVAS_USERS_TO_IGNORE']
-            self.ignoreNames = value.split(',')
-        except:
-            ignoreNames = []     # Empty list
-
-        try:
             self.kalturaPid = os.environ['KALTURA_PID']
         except:
             print('\n\nOops!  You forgot to set the KALTURA_PID environment variable.\n\n')
