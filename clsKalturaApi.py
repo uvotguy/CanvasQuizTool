@@ -133,7 +133,10 @@ class clsKalturaApi:
         for subm in self.submissions:
             entry = self.getEntry(subm.entryId)
             quiz = self.getQuiz(subm.entryId)
-            keepGrade = self.keepGradeToText(quiz.scoreType.value)
+            if hasattr(quiz, 'scoreType'):
+                keepGrade = self.keepGradeToText(quiz.scoreType.value)
+            else:
+                keepGrade = 'Latest'
             kalturaFile.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n'
                             .format(entry.name, 
                                     subm.entryId, 
