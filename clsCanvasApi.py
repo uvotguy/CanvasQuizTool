@@ -127,7 +127,7 @@ class clsCanvasApi:
             for st in gradeableStudents:
                 usr = self.getStudent(st.id)
                 userId = ''
-                if usr == None:
+                if usr is None:
                     # Student no longer enrolled
                     # usr = self.selectedCourse.get_user(st.id)
                     #print("x", end='')

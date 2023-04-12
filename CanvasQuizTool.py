@@ -78,8 +78,8 @@ for asgn in myCanvas.assignments:
             keepGrade = 'Latest'
 
         kalturaSubmission = myKaltura.getCorrectQuizSubmission(entryId, 
-                                                                gradebook.userId, 
-                                                                keepGrade)
+                                                               gradebook.userId, 
+                                                               keepGrade)
         if kalturaSubmission == None:
             continue
         
