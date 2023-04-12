@@ -145,7 +145,7 @@ class clsKalturaApi:
         handle.close()
 
     def keepGradeToText(self, value):
-        if value ==  None:
+        if value is None:
             print('\nWARNING:  Keep grade not set.  Assuming Latest.\n')
             return 'Latest'
         elif value == 1:
