@@ -69,6 +69,13 @@ class clsCanvasApi:
                 continue
             self.teachers.append(teacher)
         print('\n\t\tFound {0} teachers'.format(len(self.teachers)))
+        filename = Path.joinpath(self.courseFolder, 'Teachers.txt')
+        handle = open(filename, 'wt')
+        for tt in self.teachers:
+            handle.write('{0}\n'.format(tt))
+        handle.close()
+        print('\t\tSaved teachers:  {0}'.format(filename))
+
 
         print('\tFetching student records')
         enrollments = self.selectedCourse.get_enrollments()
@@ -81,6 +88,12 @@ class clsCanvasApi:
                 usr = self.selectedCourse.get_user(enr.user_id)
                 self.activeStudents.append(usr)
         print('\n\t\tFound {0} active students'.format(len(self.activeStudents)))
+        filename = Path.joinpath(self.courseFolder, 'Students.txt')
+        handle = open(filename, 'wt')
+        for ss in self.activeStudents:
+            handle.write('{0}\n'.format(ss.name))
+        handle.close()
+        print('\t\tSaved teachers:  {0}'.format(filename))
 
     def makeCourseGradebook(self):
         # Loop over assignmens and make a gradebook.  It is possible that

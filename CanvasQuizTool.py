@@ -137,5 +137,6 @@ for asgn in myCanvas.assignments:
                                     diff,
                                     late,
                                     strDeduction))
+            diffFile.flush()
 diffFile.close()
 print('\nOutput saved in {0}\n'.format(myCanvas.courseFolder))
