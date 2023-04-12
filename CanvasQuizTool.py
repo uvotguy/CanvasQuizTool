@@ -19,7 +19,7 @@ for entryId in myCanvas.assignmentEntryIds:
     # like a gradebook.
     try:
         myKaltura.getKalturaQuizEntry(entryId)
-    except KalturaClientException:
+    except Exception:
         print(r"\t\Ignoring quiz.")
         continue
 
