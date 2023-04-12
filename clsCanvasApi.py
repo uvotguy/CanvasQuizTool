@@ -132,13 +132,13 @@ class clsCanvasApi:
                     # usr = self.selectedCourse.get_user(st.id)
                     #print("x", end='')
                     continue
-                elif usr.sis_user_id != None:
+                elif hasattr(usr, "sis_user_id"):
                     # Ignore users without an sis_user_id
                     #print('\tWARNING!!!  Ignoring student without sis_user_id.  Name={0}'.format(st.display_name))
                     #print('?', end='')
                     userId = usr.sis_user_id
                     print('s', end='')
-                elif usr.login_id != None:
+                elif hasattr(usr, "login_id"):
                     userId = usr.login_id
                     print('l', end='')
                 else:
