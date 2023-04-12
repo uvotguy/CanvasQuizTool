@@ -149,7 +149,7 @@ class clsCanvasApi:
                 thisGradebookEntry = clsGradebookEntry(self.selectedCourse.name,
                                                        asgn.name,
                                                        allowedAttempts,
-                                                       usr.login_id,
+                                                       userId,
                                                        usr.id,
                                                        usr.name,
                                                        usr.sortable_name)
