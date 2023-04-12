@@ -93,7 +93,7 @@ class clsCanvasApi:
         for ss in self.activeStudents:
             handle.write('{0}\n'.format(ss.name))
         handle.close()
-        print('\t\tSaved teachers:  {0}'.format(filename))
+        print('\t\tSaved students:  {0}'.format(filename))
 
     def makeCourseGradebook(self):
         # Loop over assignmens and make a gradebook.  It is possible that
@@ -101,10 +101,10 @@ class clsCanvasApi:
         # list of gradeable students for each one.  The gradebook will have an
         # entry for each (assignment, gradeable student) tuple.
         print("\tQuerying Canvas assignments for this course")
-        print('\tWARNING!!!  Ignoring students without sis_user_id.')
+        #print('\tWARNING!!!  Ignoring students without sis_user_id.')
         for asgn in self.assignments:
             #print('\t{0}'.format(asgn.name))
-            print('\n\t.', end='')
+            print('\n\t', end='')
             #self.quizFolder = util.makeQuizFolder(self.appConfig.outputFolder, self.courseSlug, slugify(asgn.name))
 
             # Get a list of submissions for this assignment.
@@ -126,25 +126,30 @@ class clsCanvasApi:
             nGradeable = 0
             for st in gradeableStudents:
                 usr = self.getStudent(st.id)
+                userId = ''
                 if usr == None:
                     # Student no longer enrolled
                     # usr = self.selectedCourse.get_user(st.id)
                     #print("x", end='')
                     continue
-                elif (usr.sis_user_id == None):
+                elif usr.sis_user_id != None:
                     # Ignore users without an sis_user_id
                     #print('\tWARNING!!!  Ignoring student without sis_user_id.  Name={0}'.format(st.display_name))
                     #print('?', end='')
-                    continue
+                    userId = usr.sis_user_id
+                    print('s', end='')
+                elif usr.login_id != None:
+                    userId = usr.login_id
+                    print('l', end='')
                 else:
-                    print('.', end='')
+                    continue
 
                 nGradeable += 1
                 #print('\t\t\t{0}'.format(usr.sis_user_id))
                 thisGradebookEntry = clsGradebookEntry(self.selectedCourse.name,
                                                        asgn.name,
                                                        allowedAttempts,
-                                                       usr.sis_user_id,
+                                                       usr.login_id,
                                                        usr.id,
                                                        usr.name,
                                                        usr.sortable_name)
