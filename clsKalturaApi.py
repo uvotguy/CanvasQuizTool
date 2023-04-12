@@ -32,12 +32,12 @@ class clsKalturaApi:
         try:
             result = self.client.media.get(entryId)
         except:
-            raise "\t\tKaltura client media>get error"
+            raise Exception("\t\tKaltura client media>get error")
 
         if result == None:
-            raise "\t\tUh oh!  Media entry not found"
+            raise Exception("\t\tUh oh!  Media entry not found")
         if result.capabilities != 'quiz.quiz':
-            raise "\t\tUh oh!  Entry is not a quiz"
+            raise Exception("\t\tUh oh!  Entry is not a quiz")
         self.entries.append(result)
       
         # Got the Kaltura entry object.  Now fetch the corresponding
