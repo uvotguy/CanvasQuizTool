@@ -72,71 +72,75 @@ for asgn in myCanvas.assignments:
     # gradebook entry.
     quizGradebook = myCanvas.getQuizGradebook(asgn)
     for gradebook in quizGradebook:
+        if hasattr(quiz, 'scoreType'):
             keepGrade = myKaltura.keepGradeToText(quiz.scoreType.value)
-            kalturaSubmission = myKaltura.getCorrectQuizSubmission(entryId, 
-                                                                   gradebook.userId, 
-                                                                   keepGrade)
-            if kalturaSubmission == None:
-                continue
-            
-            kalturaPercent = kalturaSubmission.calculatedScore
-            kalturaPoints = round(kalturaPercent * asgn.points_possible,2)
+        else:
+            keepGrade = 'Latest'
 
-            if len(gradebook.grades) == 0:
+        kalturaSubmission = myKaltura.getCorrectQuizSubmission(entryId, 
+                                                                gradebook.userId, 
+                                                                keepGrade)
+        if kalturaSubmission == None:
+            continue
+        
+        kalturaPercent = kalturaSubmission.calculatedScore
+        kalturaPoints = round(kalturaPercent * asgn.points_possible,2)
+
+        if len(gradebook.grades) == 0:
+            grade = None
+        elif len(gradebook.grades) > 1:
+            raise ("Canvas gradebook has multiple grades for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
+        else:
+            if gradebook.grades[0] == '':
                 grade = None
-            elif len(gradebook.grades) > 1:
-                raise ("Canvas gradebook has multiple grades for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
             else:
-                if gradebook.grades[0] == '':
-                    grade = None
-                else:
-                    grade = round(gradebook.grades[0],2)
+                grade = round(gradebook.grades[0],2)
 
-            if len(gradebook.late) == 0:
+        if len(gradebook.late) == 0:
+            late = ''
+        elif len(gradebook.grades) > 1:
+            raise ("Canvas gradebook has multiple LATEs for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
+        else:
+            if gradebook.late[0] == '':
                 late = ''
-            elif len(gradebook.grades) > 1:
-                raise ("Canvas gradebook has multiple LATEs for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
             else:
-                if gradebook.late[0] == '':
-                    late = ''
-                else:
-                    late = gradebook.late[0]
+                late = gradebook.late[0]
 
-            if len(gradebook.deductions) == 0:
-                deduction = ''
-            elif len(gradebook.grades) > 1:
-                raise ("Canvas gradebook has multiple DEDUCTIONs for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
+        if len(gradebook.deductions) == 0:
+            deduction = ''
+        elif len(gradebook.grades) > 1:
+            raise ("Canvas gradebook has multiple DEDUCTIONs for user.  Assignment={0};UserId={1};".format(asgn.name, gradebook.userId))
+        else:
+            if gradebook.deductions[0] == '':
+                strDeduction = ''
+                deduction = 0.0
+            elif gradebook.deductions[0] == 0.0:
+                strDeduction = ''
+                deduction = 0.0
             else:
-                if gradebook.deductions[0] == '':
-                    strDeduction = ''
-                    deduction = 0.0
-                elif gradebook.deductions[0] == 0.0:
-                    strDeduction = ''
-                    deduction = 0.0
-                else:
-                    deduction = round(gradebook.deductions[0],2)
-                    strDeduction = str(deduction)
+                deduction = round(gradebook.deductions[0],2)
+                strDeduction = str(deduction)
 
-            diff = ''
-            if (grade == None):
-                # Since there's a Kaltura submission and the Canvas grade is blank
-                # the grades are obviously different.
-                grade = ''
+        diff = ''
+        if (grade == None):
+            # Since there's a Kaltura submission and the Canvas grade is blank
+            # the grades are obviously different.
+            grade = ''
+            diff = '*'
+        elif (round(kalturaPoints - deduction,2)  != round(grade, 2)):
+                grade = round(grade,2)
                 diff = '*'
-            elif (round(kalturaPoints - deduction,2)  != round(grade, 2)):
-                    grade = round(grade,2)
-                    diff = '*'
 
-            diffFile.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n'
-                            .format(asgn.name, 
-                                    gradebook.sortableName,
-                                    kalturaSubmission.userId,
-                                    kalturaPoints,
-                                    grade,
-                                    asgn.points_possible,
-                                    diff,
-                                    late,
-                                    strDeduction))
-            diffFile.flush()
+        diffFile.write('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n'
+                        .format(asgn.name, 
+                                gradebook.sortableName,
+                                kalturaSubmission.userId,
+                                kalturaPoints,
+                                grade,
+                                asgn.points_possible,
+                                diff,
+                                late,
+                                strDeduction))
+        diffFile.flush()
 diffFile.close()
 print('\nOutput saved in {0}\n'.format(myCanvas.courseFolder))
