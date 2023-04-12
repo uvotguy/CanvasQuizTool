@@ -29,7 +29,11 @@ class clsKalturaApi:
         self.client.setKs(ks)
 
     def getKalturaQuizEntry(self, entryId):
-        result = self.client.media.get(entryId)
+        try:
+            result = self.client.media.get(entryId)
+        except:
+            raise "\t\tKaltura client media>get error"
+
         if result == None:
             raise "\t\tUh oh!  Media entry not found"
         if result.capabilities != 'quiz.quiz':
