@@ -27,12 +27,13 @@ class clsCanvasApi:
 
     def __init__(self, cc):
         self.appConfig = cc
+
         try:
-            self.client = canvasapi.Canvas(self.appConfig.canvasUrl, self.appConfig.canvasToken)
+            self.client = canvasapi.Canvas(self.appConfig.canvasUrl, self.appConfig.canvasToken)            
         except:
             print("Error connection to the Canvas API.")
             exit(10)
-    
+ 
     def selectMyCourse(self):
         index = 0
         print("Select a course:")
@@ -74,6 +75,8 @@ class clsCanvasApi:
         enrollments = self.selectedCourse.get_enrollments()
         print('\t\t', end='')
         for enr in enrollments:
+            if enr.user_id in self.appConfig.ignoreNames:
+                continue
             print('.', end='')
             if enr.enrollment_state == 'active':
                 usr = self.selectedCourse.get_user(enr.user_id)

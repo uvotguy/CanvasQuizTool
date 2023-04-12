@@ -36,8 +36,8 @@ class config:
 
         lst = config_data["IgnoreNames"].split(',')
         for nn in lst:
-            thisName = nn.replace(' ', '')
-            thisName = thisName.replace(self.emailDomain, '')
+            thisName = nn.strip()
+            #thisName = thisName.replace(self.emailDomain, '')
             self.ignoreNames.append(thisName)
         print("Ignoring quiz submissions from these people:  {0}\n".format(self.ignoreNames))
 

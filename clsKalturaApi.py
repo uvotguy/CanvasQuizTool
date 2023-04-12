@@ -31,11 +31,9 @@ class clsKalturaApi:
     def getKalturaQuizEntry(self, entryId):
         result = self.client.media.get(entryId)
         if result == None:
-            print("\t\tEntry not found:  {0}".format(entryId))
-            exit(13)
+            raise "\t\tUh oh!  Media entry not found"
         if result.capabilities != 'quiz.quiz':
-            print("\t\tEntry is not a quiz.")
-            exit(14)
+            raise "\t\tUh oh!  Entry is not a quiz"
         self.entries.append(result)
       
         # Got the Kaltura entry object.  Now fetch the corresponding

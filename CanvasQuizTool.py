@@ -18,7 +18,11 @@ for entryId in myCanvas.assignmentEntryIds:
     # clsKalturaApi is set up to save information **for a single quiz**.
     # It does not save a list of submission object across all quizzes,
     # like a gradebook.
-    myKaltura.getKalturaQuizEntry(entryId)
+    try:
+        myKaltura.getKalturaQuizEntry(entryId)
+    except:
+        print('\t\Ignoring quiz.')
+        continue
 
     # Fetch all Kaltura submissions for this quiz.  Note that Kaltura has
     # no concept of semesters - it's not an LMS.  The resulting list will
