@@ -250,7 +250,7 @@ class clsCanvasApi:
                 if idSearch != None:
                     return idSearch.group(1)
             # Some video quiz URIs might begin with this:    
-            result = re.search('https://psucanvas-prod.kaf.kaltura.com/browseandembed/index/media/entryid/', url)
+            result = re.search(self.appConfig.kalturaKafUrl, url)
             if result != None:
                 idSearch = re.search(r'\/media\/entryid\/(\w*)', url)
                 if idSearch != None:

@@ -78,3 +78,9 @@ class config:
         except:
             print('\n\nOops!  You forgot to set the KALTURA_USER environment variable.\n\n')
             exit(7)
+
+        try:
+            self.kalturaKafUrl = os.environ['KALTURA_KAF_URL']
+        except:
+            print('\n\nOops!  You forgot to set the KALTURA_KAF_URL environment variable.\n\n')
+            exit(9)
