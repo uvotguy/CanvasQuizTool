@@ -244,7 +244,7 @@ class clsCanvasApi:
     def getIvqAssignmentEntryId(self, asgn):
         if hasattr(asgn, 'external_tool_tag_attributes'):
             url = asgn.external_tool_tag_attributes['url']
-            result = re.search(self.appConfig.kalturaUrl, url)
+            result = re.search(self.appConfig.kalturaQuizLaunchUrl, url)
             if result != None:
                 idSearch = re.search(r'\/media\/entryid\/(\w*)', url)
                 if idSearch != None:

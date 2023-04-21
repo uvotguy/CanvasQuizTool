@@ -5,16 +5,14 @@ from pathlib import Path
 class config:
     outputFolder = ''
     ignoreNames = []
-    emailDomain = ''
 
-    canvasUserId = ''
     canvasToken = ''
     canvasUrl = ''
 
-    kalturaUrl = ''
     kalturaPid = ''
     kalturaSecret = ''
     kalturaUser = ''
+    kalturaQuizLaunchUrl = ''
 
     def __init__(self):
         configFile = 'config.json'
@@ -32,22 +30,12 @@ class config:
         self.outputFolder = Path.joinpath(home, config_data["OutputFolder"])
         print('Output folder is {0}\n'.format(self.outputFolder))
      
-        self.emailDomain = config_data["EmailDomain"]
-
         lst = config_data["IgnoreNames"].split(',')
         for nn in lst:
             thisName = nn.strip()
             #thisName = thisName.replace(self.emailDomain, '')
             self.ignoreNames.append(thisName)
         print("Ignoring quiz submissions from these people:  {0}\n".format(self.ignoreNames))
-
-        self.kalturaUrl = config_data["KalturaUrl"]
-        
-        try:
-            self.canvasUserId = os.environ['CANVAS_USER_ID']
-        except:
-            print('\n\nOops!  You forgot to set the CANVAS_USER_ID environment variable.\n\n')
-            exit(1)
 
         try:
             self.canvasToken = os.environ['CANVAS_USER_TOKEN']
@@ -80,7 +68,7 @@ class config:
             exit(7)
 
         try:
-            self.kalturaKafUrl = os.environ['KALTURA_KAF_URL']
+            self.kalturaQuizLaunchUrl = os.environ['KALTURA_QUIZ_LAUNCH_URL']
         except:
-            print('\n\nOops!  You forgot to set the KALTURA_KAF_URL environment variable.\n\n')
+            print('\n\nOops!  You forgot to set the KALTURA_QUIZ_LAUNCH_URL environment variable.\n\n')
             exit(9)
