@@ -1,4 +1,4 @@
-# ReportCourseQuizResults
+# Canvas Quiz Tool
 We occasionally see differences between grades in a course gradebook (for a Canvas course)
 and grades submitted to the gradebook via the Kaltura KAF module.  This is a known problem
 which has yet to be solved.  This tool can be used to compare Canvas gradebook grades to 
